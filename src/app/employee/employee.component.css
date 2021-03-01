@@ -1,0 +1,21 @@
+.employee-button{
+    margin-bottom: 1%;
+}
+.btn-employee{
+    background-color: blueviolet;
+    color: aliceblue;
+}
+.btn-employee:hover{
+    color: blueviolet;
+    background-color: aliceblue;
+}
+.table-employee{
+    margin-top: 3%;
+}
+.employee-age{
+    text-align: center;
+}
+
+.employee-salary{
+    text-align: center;
+}

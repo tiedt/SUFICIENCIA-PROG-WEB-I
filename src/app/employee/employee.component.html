@@ -1,0 +1,147 @@
+<br>
+<app-titulo [titulo]="titulo"></app-titulo>
+  <div class="employee-button">
+     <button class="btn btn-employee" (click)="newEmployee(template)">New Employee>
+      <i class="fa fa-plus-circle"></i>&nbsp;
+    </button>
+</div>
+<table class="table table-striped">
+  <thead class="thead-light table-employee">
+    <tr>
+      <th>Employee Name</th>
+      <th class="employee-age">Employee Age</th>
+      <th class="employee-salary">Employee Salary</th>
+      <th colspan="2">Opções</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="employees && employees.length">
+    <tr *ngFor="let employee of employees | paginate: { itemsPerPage: contador, currentPage: paginaAtual }">
+      <td>{{employee.employee_name}}</td>
+      <td class="employee-age">{{employee.employee_age}}</td>
+      <td class="employee-salary">{{employee.employee_salary}}</td>
+       <td>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-success" (click)="editEmployee(employee,template)" tooltip="Editar">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="deleteEmployee(employee,confirm)" tooltip="Excluir">
+            <i class="fa fa-eraser"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+  <tfoot *ngIf="!employees">
+    <tr colspan="7" class="text-center">
+      <h4>
+        Nenhum cliente encontrado
+      </h4>
+    </tr>
+  </tfoot>
+</table>
+<div class="text-right">
+  <pagination-controls (pageChange)="paginaAtual = $event" previousLabel="Anterior" nextLabel="Próximo"></pagination-controls>
+</div>
+
+ <div bsModal #template="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Register</h4>
+        <button type="button" class="close pull-right" (click)="template.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="registerForm">
+          <div class="form-row">
+            <div class="form-group col-md-8">
+              <label>Nome Completo</label>
+              <input type="text" class="form-control"
+                [ngClass]="{'is-invalid': registerForm.get('employee_name').errors && registerForm.get('employee_name').touched}"
+                formControlName="employee_name" placeholder="Insert Employee Name">
+              <div *ngIf="registerForm.get('employee_name').hasError('required') && registerForm.get('employee_name').touched"
+                class="invalid-feedback">
+                O Nome é obrigatório.
+              </div>
+              <div *ngIf="registerForm.get('employee_name').hasError('minlength') && registerForm.get('employee_name').touched"
+                class="invalid-feedback">
+                O Nome deve ter no mínimo 4 Caracters.
+              </div>
+              <div *ngIf="registerForm.get('employee_name').hasError('maxlength') && registerForm.get('employee_name').touched"
+                class="invalid-feedback">
+                O Nome deve ter no máximo 50 Caracters.
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label>Employee Age</label>
+              <input type="text" class="form-control"
+                [ngClass]="{'is-invalid': registerForm.get('employee_age').errors && registerForm.get('employee_age').touched}"
+                formControlName="employee_age" placeholder="Insert Employee Age">
+              <div *ngIf="registerForm.get('employee_age').hasError('required') && registerForm.get('employee_age').touched"
+                class="invalid-feedback">
+              </div>
+              <div *ngIf="registerForm.get('employee_age').hasError('minlength') && registerForm.get('employee_age').touched"
+                class="invalid-feedback">
+              </div>
+              <div *ngIf="registerForm.get('employee_age').hasError('maxlength') && registerForm.get('employee_age').touched"
+                class="invalid-feedback">
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label>Employee Salary</label>
+              <input type="text" class="form-control"
+                [ngClass]="{'is-invalid': registerForm.get('employee_salary').errors && registerForm.get('employee_salary').touched}"
+                formControlName="employee_salary" placeholder="Insert Employee Salary">
+              <div *ngIf="registerForm.get('employee_salary').hasError('required') && registerForm.get('employee_salary').touched"
+                class="invalid-feedback">
+              </div>
+              <div *ngIf="registerForm.get('employee_salary').hasError('minlength') && registerForm.get('employee_salary').touched"
+                class="invalid-feedback">
+              </div>
+              <div *ngIf="registerForm.get('employee_salary').hasError('maxlength') && registerForm.get('employee_salary').touched"
+                class="invalid-feedback">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="template.hide()">
+          Close
+        </button>
+        <button class="btn btn-primary ml-auto" [disabled]="!registerForm.valid" (click)="salvarAlteracao(template)">
+          Save Editions
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #confirm="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">
+          Delete Employee
+        </h4>
+        <button type="button" class="close pull-right" (click)="confirm.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{bodyDeleteEmployee}}</p>
+      </div>
+      <div class="modal-footer btn-group d-flex">
+        <button type="button" class="btn btn-outline-primary" (click)="confirm.hide()">
+          CANCEL
+        </button>
+        <button type="button" class="btn btn-outline-danger" (click)="confirmeDelete(employee,template)">
+          DELETE
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
